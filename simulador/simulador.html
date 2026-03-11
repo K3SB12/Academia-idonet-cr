@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Examen · Academia MEP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .simulador-container {
+            display: flex;
+            gap: 2rem;
+            min-height: calc(100vh - 4rem);
+        }
+        
+        .simulador-main {
+            flex: 2;
+        }
+        
+        .simulador-sidebar {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .timer-card {
+            background: linear-gradient(135deg, #1E3A8A, #2563EB);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: monospace;
+            margin: 1rem 0;
+        }
+        
+        .progreso-preguntas {
+            font-size: 1.1rem;
+            color: #6B7280;
+            margin-bottom: 1rem;
+        }
+        
+        .panel-navegacion {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .nav-numero {
+            aspect-ratio: 1;
+            border: 1px solid #E5E7EB;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-numero:hover {
+            background: #F3F4F6;
+            transform: scale(1.05);
+        }
+        
+        .nav-numero.respondida {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+        
+        .nav-numero.marcada {
+            background: #FEF3C7;
+            color: #D97706;
+            border-color: #D97706;
+        }
+        
+        .nav-numero.actual {
+            border: 3px solid #2563EB;
+            font-weight: 700;
+        }
+        
+        .pregunta-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .pregunta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .pregunta-numero {
+            font-size: 1.1rem;
+            color: #2563EB;
+            font-weight: 600;
+        }
+        
+        .pregunta-tema {
+            background: #EFF6FF;
+            color: #2563EB;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .pregunta-texto {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .opciones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .opcion {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .opcion:hover {
+            border-color: #2563EB;
+            background: #F0F9FF;
+        }
+        
+        .opcion.selected {
+            border-color: #2563EB;
+            background: #EFF6FF;
+        }
+        
+        .opcion input[type="radio"] {
+            display: none;
+        }
+        
+        .opcion-letra {
+            width: 30px;
+            height: 30px;
+            background: #F3F4F6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .opcion.selected .opcion-letra {
+            background: #2563EB;
+            color: white;
+        }
+        
+        .pregunta-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #E5E7EB;
+        }
+        
+        .btn-accion {
+            padding: 0.7rem 1.5rem;
+            border: 1px solid #E5E7EB;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-accion:hover {
+            background: #F3F4F6;
+        }
+        
+        .navegacion-botones {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-nav {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-nav.prev {
+            background: #F3F4F6;
+            color: #1F2937;
+        }
+        
+        .btn-nav.next {
+            background: #2563EB;
+            color: white;
+        }
+        
+        .btn-nav.finalizar {
+            background: #DC2626;
+            color: white;
+            margin-top: 1rem;
+        }
+        
+        .resultados-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .resultado-stats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-circle {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            background: #E5E7EB;
+        }
+        
+        .stats-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: left;
+        }
+        
+        .stat-label {
+            color: #6B7280;
+            display: block;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .stat-value.correctas {
+            color: #10B981;
+        }
+        
+        .stat-value.incorrectas {
+            color: #DC2626;
+        }
+        
+        .temas-reforzar {
+            background: #FEF2F2;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .temas-reforzar ul {
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+        }
+        
+        .temas-reforzar li {
+            color: #DC2626;
+            margin: 0.5rem 0;
+        }
+        
+        .felicitaciones {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 2rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            margin: 2rem 0;
+        }
+        
+        .resultado-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: #2563EB;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-outline {
+            background: white;
+            color: #2563EB;
+            padding: 1rem 2rem;
+            border: 2px solid #2563EB;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <span class="logo-text">Academia MEP</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="../index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+                <a href="../modulos/politica.html" class="nav-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>Módulos</span>
+                </a>
+                <a href="#" onclick="window.parent.cargarBiblioteca(); return false;" class="nav-item">
+                    <i class="fas fa-library"></i>
+                    <span>Biblioteca</span>
+                </a>
+                <a href="simulador.html" class="nav-item active">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>Simulador</span>
+                </a>
+                <a href="#" onclick="window.parent.mostrarProgreso(); return false;" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Mi Progreso</span>
+                </a>
+            </nav>
+        </aside>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <main class="main-content">
+            <div class="simulador-container" id="simulador-container">
+                <div class="simulador-main">
+                    <div class="pregunta-container" id="pregunta-container">
+                        <!-- Se carga dinámicamente con JS -->
+                        <div style="text-align: center; padding: 3rem;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: #2563EB;"></i>
+                            <p style="margin-top: 1rem;">Cargando simulador...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="navegacion-botones">
+                        <button class="btn-nav prev" onclick="anteriorPregunta()">
+                            <i class="fas fa-arrow-left"></i> Anterior
+                        </button>
+                        <button class="btn-nav next" onclick="siguientePregunta()">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <button class="btn-nav finalizar" onclick="finalizarSimulador()">
+                        <i class="fas fa-flag-checkered"></i> Finalizar examen
+                    </button>
+                </div>
+                
+                <div class="simulador-sidebar">
+                    <div class="timer-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Tiempo restante</h3>
+                        <div class="timer-display" id="timer-display">04:00:00</div>
+                        <div class="progreso-preguntas" id="progreso-preguntas">
+                            <span id="respondidas-count">0</span>/<span id="total-count">60</span> respondidas
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 1rem;">Navegación rápida</h3>
+                    <div class="panel-navegacion" id="panel-navegacion">
+                        <!-- Se llena con JS -->
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; font-size: 0.9rem; color: #6B7280;">
+                        <p><span style="display: inline-block; width: 12px; height: 12px; background: #10B981; border-radius: 4px; margin-right: 0.5rem;"></span> Respondida</p>
+                        <p><span style="display: inline-block; width: 12px; height: 12px; background: #FEF3C7; border: 1px solid #D97706; border-radius: 4px; margin-right: 0.5rem;"></span> Marcada</p>
+                        <p><span style="display: inline-block; width: 12px; height: 12px; background: white; border: 1px solid #E5E7EB; border-radius: 4px; margin-right: 0.5rem;"></span> Pendiente</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/simulador.js"></script>
+    <script>
+        // Menú móvil
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        });
+        
+        // Actualizar contador de respondidas
+        function actualizarContadorRespondidas() {
+            const respondidas = Object.keys(estadoSimulador?.respuestas || {}).length;
+            document.getElementById('respondidas-count').textContent = respondidas;
+            document.getElementById('total-count').textContent = estadoSimulador?.preguntas?.length || 60;
+        }
+        
+        // Extender función guardarRespuesta para actualizar contador
+        const originalGuardarRespuesta = window.guardarRespuesta;
+        window.guardarRespuesta = function(opcion) {
+            if (originalGuardarRespuesta) originalGuardarRespuesta(opcion);
+            actualizarContadorRespondidas();
+        };
+    </script>
+</body>
+</html>
