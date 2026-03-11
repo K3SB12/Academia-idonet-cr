@@ -92,6 +92,7 @@ a {
     color: var(--texto-secundario);
     transition: var(--transicion);
     border-left: 4px solid transparent;
+    cursor: pointer;
 }
 
 .nav-item i {
@@ -166,7 +167,78 @@ a {
     box-shadow: var(--sombra);
 }
 
-/* ===== TARJETAS ===== */
+.loader-container {
+    text-align: center;
+    padding: 4rem;
+}
+
+.loader-icon {
+    font-size: 3rem;
+    color: var(--azul-claro);
+    margin-bottom: 1rem;
+}
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+    background: linear-gradient(135deg, var(--azul-institucional) 0%, var(--azul-claro) 100%);
+    color: white;
+    padding: 3rem;
+    border-radius: 20px;
+    margin-bottom: 2.5rem;
+}
+
+.hero-section h1 {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 600px;
+}
+
+.hero-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: var(--transicion);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: white;
+    color: var(--azul-institucional);
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+}
+
+.btn-outline {
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    background: transparent;
+}
+
+.btn-outline:hover {
+    border-color: white;
+    background: rgba(255,255,255,0.1);
+}
+
+/* ===== TARJETAS DE MÓDULOS ===== */
 .modulos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -226,6 +298,9 @@ a {
     font-weight: 500;
     font-size: 0.9rem;
     transition: var(--transicion);
+    cursor: pointer;
+    border: none;
+    background: transparent;
 }
 
 .btn-modulo i {
@@ -241,64 +316,7 @@ a {
     transform: translateX(5px);
 }
 
-/* ===== HERO SECTION ===== */
-.hero-section {
-    background: linear-gradient(135deg, var(--azul-institucional) 0%, var(--azul-claro) 100%);
-    color: white;
-    padding: 3rem;
-    border-radius: 20px;
-    margin-bottom: 2.5rem;
-}
-
-.hero-section h1 {
-    color: white;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.hero-section p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-    max-width: 600px;
-}
-
-.hero-buttons {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-}
-
-.btn {
-    padding: 0.8rem 2rem;
-    border-radius: 30px;
-    font-weight: 500;
-    transition: var(--transicion);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-primary {
-    background: white;
-    color: var(--azul-institucional);
-}
-
-.btn-primary:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
-}
-
-.btn-outline {
-    border: 2px solid rgba(255,255,255,0.3);
-    color: white;
-}
-
-.btn-outline:hover {
-    border-color: white;
-    background: rgba(255,255,255,0.1);
-}
-
-/* ===== BIBLIOTECA ===== */
+/* ===== ESTILOS DE BIBLIOTECA ===== */
 .biblioteca-header {
     display: flex;
     justify-content: space-between;
@@ -435,6 +453,8 @@ a {
     margin: 2% auto;
     border-radius: 16px;
     animation: modalSlideIn 0.3s;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 @keyframes modalSlideIn {
@@ -454,6 +474,10 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
 }
 
 .modal-header h3 {
@@ -473,81 +497,4 @@ a {
 
 .modal-body {
     padding: 1.5rem;
-}
-
-/* ===== PROGRESO ===== */
-.progreso-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 16px;
-    box-shadow: var(--sombra);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.stat-icon {
-    background: #EFF6FF;
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.stat-icon i {
-    font-size: 1.8rem;
-    color: var(--azul-claro);
-}
-
-.stat-info h4 {
-    font-size: 0.9rem;
-    font-weight: normal;
-    color: var(--texto-secundario);
-    margin-bottom: 0.2rem;
-}
-
-.stat-number {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--azul-institucional);
-}
-
-.temas-grid {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 16px;
-    box-shadow: var(--sombra);
-}
-
-.tema-item {
-    margin: 1rem 0;
-}
-
-.tema-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.3rem;
-}
-
-.tema-bar {
-    background: #E5E7EB;
-    height: 8px;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.tema-fill {
-    height: 8px;
-    background: var(--azul-claro);
-    border-radius: 20px;
-    width: 0%;
 }
