@@ -1,13 +1,14 @@
 // ============================================
-// SIMULADOR.JS - Examen de práctica 60 preguntas
-// Academia para la Prueba de Idoneidad Docente
+// SIMULADOR.JS - Lógica COMPLETA del examen
+// 60 preguntas, 4 horas, localStorage
+// Versión: 2.0 - CORREGIDA Y COMPLETA
 // ============================================
 
 // Configuración del simulador
 const SIM_CONFIG = {
     totalPreguntas: 60,
-    tiempoSegundos: 4 * 60 * 60, // 4 horas en segundos
-    tiempoAlerta: 300 // 5 minutos antes
+    tiempoSegundos: 4 * 60 * 60, // 4 horas
+    tiempoAlerta: 300 // 5 minutos
 };
 
 let estadoSimulador = {
@@ -20,33 +21,42 @@ let estadoSimulador = {
     finalizado: false
 };
 
-// Cargar preguntas desde JSON
+// Inicializar simulador
+function inicializarSimulador() {
+    cargarPreguntasSimulador();
+}
+
+// Cargar preguntas desde preguntas.json
 async function cargarPreguntasSimulador() {
     try {
-        const respuesta = await fetch('../data/preguntas.json');
+        // Intentar cargar desde archivo JSON
+        const respuesta = await fetch('data/preguntas.json');
         const preguntas = await respuesta.json();
         
         // Seleccionar 60 preguntas aleatorias
         estadoSimulador.preguntas = seleccionarAleatorias(preguntas, 60);
-        estadoSimulador.respuestas = {};
-        estadoSimulador.marcadas.clear();
-        
-        mostrarPregunta();
-        iniciarTemporizador();
         
     } catch (error) {
-        console.error('Error cargando preguntas:', error);
-        // Datos de emergencia si falla la carga
-        estadoSimulador.preguntas = generarPreguntasEmergencia();
-        mostrarPregunta();
-        iniciarTemporizador();
+        console.error('Error cargando preguntas, usando datos de emergencia:', error);
+        estadoSimulador.preguntas = generarPreguntasEmergencia(60);
     }
+    
+    // Reiniciar estado
+    estadoSimulador.respuestas = {};
+    estadoSimulador.marcadas.clear();
+    estadoSimulador.preguntaActual = 0;
+    estadoSimulador.tiempoRestante = SIM_CONFIG.tiempoSegundos;
+    estadoSimulador.finalizado = false;
+    
+    mostrarPregunta();
+    iniciarTemporizador();
+    actualizarPanelNavegacion();
 }
 
 // Seleccionar preguntas aleatorias
 function seleccionarAleatorias(array, cantidad) {
     const shuffled = [...array].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, cantidad);
+    return shuffled.slice(0, Math.min(cantidad, shuffled.length));
 }
 
 // Iniciar temporizador
@@ -56,17 +66,15 @@ function iniciarTemporizador() {
     }
     
     estadoSimulador.timerInterval = setInterval(() => {
-        estadoSimulador.tiempoRestante--;
+        if (estadoSimulador.finalizado) return;
         
-        // Actualizar display
+        estadoSimulador.tiempoRestante--;
         actualizarTemporizador();
         
-        // Verificar tiempo límite
         if (estadoSimulador.tiempoRestante <= 0) {
             finalizarSimulador();
         }
         
-        // Alerta de 5 minutos
         if (estadoSimulador.tiempoRestante === SIM_CONFIG.tiempoAlerta) {
             alert('⏰ Quedan 5 minutos para finalizar el examen');
         }
@@ -76,20 +84,17 @@ function iniciarTemporizador() {
 
 // Actualizar display del temporizador
 function actualizarTemporizador() {
+    const timerElement = document.getElementById('timer-display');
+    if (!timerElement) return;
+    
     const horas = Math.floor(estadoSimulador.tiempoRestante / 3600);
     const minutos = Math.floor((estadoSimulador.tiempoRestante % 3600) / 60);
     const segundos = estadoSimulador.tiempoRestante % 60;
     
-    const tiempoStr = `${horas.toString().padStart(2,'0')}:${minutos.toString().padStart(2,'0')}:${segundos.toString().padStart(2,'0')}`;
+    timerElement.textContent = `${horas.toString().padStart(2,'0')}:${minutos.toString().padStart(2,'0')}:${segundos.toString().padStart(2,'0')}`;
     
-    const timerElement = document.getElementById('timer-display');
-    if (timerElement) {
-        timerElement.textContent = tiempoStr;
-        
-        // Cambiar color si queda poco tiempo
-        if (estadoSimulador.tiempoRestante < 300) {
-            timerElement.style.color = '#DC2626';
-        }
+    if (estadoSimulador.tiempoRestante < 300) {
+        timerElement.style.color = '#DC2626';
     }
 }
 
@@ -97,59 +102,44 @@ function actualizarTemporizador() {
 function mostrarPregunta() {
     if (estadoSimulador.finalizado) return;
     
-    const pregunta = estadoSimulador.preguntas[estadoSimulador.preguntaActual];
-    if (!pregunta) return;
-    
     const container = document.getElementById('pregunta-container');
     if (!container) return;
+    
+    const pregunta = estadoSimulador.preguntas[estadoSimulador.preguntaActual];
+    if (!pregunta) return;
     
     const respuestaGuardada = estadoSimulador.respuestas[estadoSimulador.preguntaActual];
     
     container.innerHTML = `
-        <div class="pregunta-header">
-            <span class="pregunta-numero">Pregunta ${estadoSimulador.preguntaActual + 1} de ${estadoSimulador.preguntas.length}</span>
-            <span class="pregunta-tema">${pregunta.tema || 'General'}</span>
-        </div>
-        
-        <div class="pregunta-texto">
-            ${pregunta.pregunta}
-        </div>
-        
-        <div class="opciones-container">
-            <label class="opcion ${respuestaGuardada === 'A' ? 'selected' : ''}">
-                <input type="radio" name="respuesta" value="A" ${respuestaGuardada === 'A' ? 'checked' : ''} onchange="guardarRespuesta('A')">
-                <span class="opcion-letra">A</span>
-                <span class="opcion-texto">${pregunta.A}</span>
-            </label>
+        <div style="background: white; border-radius: 16px; padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #E5E7EB;">
+                <span style="color: #2563EB; font-weight: 600;">Pregunta ${estadoSimulador.preguntaActual + 1} de ${estadoSimulador.preguntas.length}</span>
+                <span style="background: #EFF6FF; color: #2563EB; padding: 0.3rem 1rem; border-radius: 30px;">${pregunta.tema || 'General'}</span>
+            </div>
             
-            <label class="opcion ${respuestaGuardada === 'B' ? 'selected' : ''}">
-                <input type="radio" name="respuesta" value="B" ${respuestaGuardada === 'B' ? 'checked' : ''} onchange="guardarRespuesta('B')">
-                <span class="opcion-letra">B</span>
-                <span class="opcion-texto">${pregunta.B}</span>
-            </label>
+            <div style="font-size: 1.2rem; margin-bottom: 2rem;">
+                ${pregunta.pregunta}
+            </div>
             
-            <label class="opcion ${respuestaGuardada === 'C' ? 'selected' : ''}">
-                <input type="radio" name="respuesta" value="C" ${respuestaGuardada === 'C' ? 'checked' : ''} onchange="guardarRespuesta('C')">
-                <span class="opcion-letra">C</span>
-                <span class="opcion-texto">${pregunta.C}</span>
-            </label>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                ${['A','B','C','D'].map(letra => `
+                    <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid ${respuestaGuardada === letra ? '#2563EB' : '#E5E7EB'}; border-radius: 12px; cursor: pointer; background: ${respuestaGuardada === letra ? '#EFF6FF' : 'white'};"
+                           onclick="window.guardarRespuesta('${letra}')">
+                        <input type="radio" name="respuesta" value="${letra}" ${respuestaGuardada === letra ? 'checked' : ''} style="display: none;">
+                        <span style="width: 30px; height: 30px; background: ${respuestaGuardada === letra ? '#2563EB' : '#F3F4F6'}; color: ${respuestaGuardada === letra ? 'white' : '#1F2937'}; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">${letra}</span>
+                        <span style="flex:1;">${pregunta[letra]}</span>
+                    </label>
+                `).join('')}
+            </div>
             
-            <label class="opcion ${respuestaGuardada === 'D' ? 'selected' : ''}">
-                <input type="radio" name="respuesta" value="D" ${respuestaGuardada === 'D' ? 'checked' : ''} onchange="guardarRespuesta('D')">
-                <span class="opcion-letra">D</span>
-                <span class="opcion-texto">${pregunta.D}</span>
-            </label>
-        </div>
-        
-        <div class="pregunta-actions">
-            <button class="btn-accion" onclick="marcarPregunta()" ${estadoSimulador.marcadas.has(estadoSimulador.preguntaActual) ? 'style="background:#FEF3C7"' : ''}>
-                <i class="fas fa-flag"></i>
-                ${estadoSimulador.marcadas.has(estadoSimulador.preguntaActual) ? 'Marcada' : 'Marcar para revisar'}
-            </button>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #E5E7EB;">
+                <button onclick="window.marcarPregunta()" style="padding: 0.7rem 1.5rem; border: 1px solid #E5E7EB; background: ${estadoSimulador.marcadas.has(estadoSimulador.preguntaActual) ? '#FEF3C7' : 'white'}; border-radius: 8px; cursor: pointer;">
+                    <i class="fas fa-flag"></i>
+                    ${estadoSimulador.marcadas.has(estadoSimulador.preguntaActual) ? 'Marcada' : 'Marcar para revisar'}
+                </button>
+            </div>
         </div>
     `;
-    
-    actualizarPanelNavegacion();
 }
 
 // Guardar respuesta
@@ -165,7 +155,7 @@ function marcarPregunta() {
     } else {
         estadoSimulador.marcadas.add(estadoSimulador.preguntaActual);
     }
-    mostrarPregunta(); // Para actualizar el botón
+    mostrarPregunta();
     actualizarPanelNavegacion();
 }
 
@@ -189,7 +179,7 @@ function irAPregunta(numero) {
     mostrarPregunta();
 }
 
-// Actualizar panel de navegación (números 1-60)
+// Actualizar panel de navegación
 function actualizarPanelNavegacion() {
     const panel = document.getElementById('panel-navegacion');
     if (!panel) return;
@@ -200,18 +190,25 @@ function actualizarPanelNavegacion() {
         
         if (estadoSimulador.respuestas[i]) {
             clase += ' respondida';
-        } else if (estadoSimulador.marcadas.has(i)) {
+        }
+        if (estadoSimulador.marcadas.has(i)) {
             clase += ' marcada';
         }
-        
         if (i === estadoSimulador.preguntaActual) {
             clase += ' actual';
         }
         
-        html += `<button class="${clase}" onclick="irAPregunta(${i})">${i + 1}</button>`;
+        html += `<button class="${clase}" onclick="window.irAPregunta(${i})">${i + 1}</button>`;
     }
     
     panel.innerHTML = html;
+    
+    // Actualizar contador de respondidas
+    const respondidas = Object.keys(estadoSimulador.respuestas).length;
+    const respondidasSpan = document.getElementById('respondidas-count');
+    if (respondidasSpan) {
+        respondidasSpan.textContent = respondidas;
+    }
 }
 
 // Finalizar simulador
@@ -226,18 +223,19 @@ function finalizarSimulador() {
     const temasFallados = new Set();
     
     estadoSimulador.preguntas.forEach((pregunta, index) => {
-        if (estadoSimulador.respuestas[index] === pregunta.correcta) {
+        const respuesta = estadoSimulador.respuestas[index];
+        if (respuesta && pregunta.correcta && respuesta === pregunta.correcta) {
             correctas++;
-        } else {
-            if (pregunta.tema) temasFallados.add(pregunta.tema);
+        } else if (pregunta.tema) {
+            temasFallados.add(pregunta.tema);
         }
     });
     
     const porcentaje = (correctas / estadoSimulador.preguntas.length) * 100;
     
     // Guardar en progreso
-    if (typeof registrarSimulacion !== 'undefined') {
-        registrarSimulacion({
+    if (window.registrarSimulacion) {
+        window.registrarSimulacion({
             aciertos: correctas,
             total: estadoSimulador.preguntas.length,
             porcentaje: porcentaje,
@@ -245,66 +243,70 @@ function finalizarSimulador() {
         });
     }
     
-    // Mostrar resultados
     mostrarResultados(correctas, porcentaje, Array.from(temasFallados));
 }
 
-// Mostrar pantalla de resultados
+// Mostrar resultados
 function mostrarResultados(correctas, porcentaje, temasFallados) {
     const container = document.getElementById('simulador-container');
     if (!container) return;
     
     container.innerHTML = `
-        <div class="resultados-container">
-            <h2>📊 Resultado del simulador</h2>
+        <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 800px; margin: 0 auto;">
+            <h2 style="text-align: center; margin-bottom: 2rem;">📊 Resultado del simulador</h2>
             
-            <div class="resultado-stats">
-                <div class="stat-circle">
-                    <div class="circle" style="background: conic-gradient(#10B981 0deg ${porcentaje * 3.6}deg, #E5E7EB ${porcentaje * 3.6}deg 360deg)">
-                        <span>${Math.round(porcentaje)}%</span>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 3rem; margin-bottom: 2rem;">
+                <div style="width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(#10B981 0deg ${porcentaje * 3.6}deg, #E5E7EB ${porcentaje * 3.6}deg 360deg); display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700;">
+                        ${Math.round(porcentaje)}%
                     </div>
                 </div>
                 
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-label">Correctas</span>
-                        <span class="stat-value correctas">${correctas}</span>
+                <div>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="color: #6B7280;">Correctas</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #10B981;">${correctas}</div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Incorrectas</span>
-                        <span class="stat-value incorrectas">${60 - correctas}</span>
+                    <div>
+                        <div style="color: #6B7280;">Incorrectas</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #DC2626;">${estadoSimulador.preguntas.length - correctas}</div>
                     </div>
                 </div>
             </div>
             
             ${temasFallados.length > 0 ? `
-                <div class="temas-reforzar">
-                    <h3>Temas para reforzar:</h3>
-                    <ul>
-                        ${temasFallados.map(tema => `<li>🔹 ${tema}</li>`).join('')}
+                <div style="background: #FEF2F2; padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                    <h3 style="color: #B91C1C; margin-bottom: 1rem;">📚 Temas para reforzar:</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        ${temasFallados.map(tema => `
+                            <li style="padding: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-circle" style="color: #EF4444; font-size: 0.5rem;"></i>
+                                ${tema}
+                            </li>
+                        `).join('')}
                     </ul>
                 </div>
             ` : `
-                <div class="felicitaciones">
+                <div style="background: #D1FAE5; color: #065F46; padding: 2rem; border-radius: 12px; text-align: center; margin: 2rem 0;">
                     🎉 ¡Excelente trabajo! Has dominado todos los temas.
                 </div>
             `}
             
-            <div class="resultado-actions">
-                <button onclick="location.reload()" class="btn-primary">
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button onclick="window.inicializarSimulador()" class="btn-primary">
                     <i class="fas fa-redo"></i> Nuevo simulador
                 </button>
-                <a href="../index.html" class="btn-outline">
+                <button onclick="window.cargarInicio()" class="btn-outline">
                     <i class="fas fa-home"></i> Ir al inicio
-                </a>
+                </button>
             </div>
         </div>
     `;
 }
 
-// Datos de emergencia si falla la carga
-function generarPreguntasEmergencia() {
-    return [
+// Generar preguntas de emergencia
+function generarPreguntasEmergencia(cantidad) {
+    const basePreguntas = [
         {
             pregunta: "¿Cuál es el propósito principal de la evaluación formativa?",
             A: "Asignar una calificación final",
@@ -322,13 +324,38 @@ function generarPreguntasEmergencia() {
             D: "Independiente del contexto social",
             correcta: "B",
             tema: "Política educativa"
+        },
+        {
+            pregunta: "¿Qué caracteriza a las Comunidades Profesionales de Aprendizaje?",
+            A: "Docentes trabajando aisladamente",
+            B: "Jerarquía rígida",
+            C: "Colaboración para mejorar prácticas",
+            D: "Reuniones administrativas",
+            correcta: "C",
+            tema: "Gestión educativa"
         }
     ];
+    
+    const preguntas = [];
+    for (let i = 0; i < cantidad; i++) {
+        const base = basePreguntas[i % basePreguntas.length];
+        preguntas.push({
+            ...base,
+            id: i + 1,
+            pregunta: `${base.pregunta} (${i + 1})`
+        });
+    }
+    
+    return preguntas;
 }
 
-// Inicializar cuando se carga la página
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname.includes('simulador.html')) {
-        cargarPreguntasSimulador();
-    }
-});
+// ============================================
+// EXPORTAR FUNCIONES GLOBALES
+// ============================================
+window.inicializarSimulador = inicializarSimulador;
+window.guardarRespuesta = guardarRespuesta;
+window.marcarPregunta = marcarPregunta;
+window.siguientePregunta = siguientePregunta;
+window.anteriorPregunta = anteriorPregunta;
+window.irAPregunta = irAPregunta;
+window.finalizarSimulador = finalizarSimulador;
