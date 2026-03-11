@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Idoneidad Docente · Costa Rica</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Nuestros estilos -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Navegación Lateral (Dashboard Style) -->
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <span class="logo-text">Academia MEP</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+                <a href="modulos/politica.html" class="nav-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>Módulos</span>
+                </a>
+                <a href="#" onclick="cargarBiblioteca(); return false;" class="nav-item" id="nav-biblioteca">
+                    <i class="fas fa-library"></i>
+                    <span>Biblioteca</span>
+                </a>
+                <a href="simulador/simulador.html" class="nav-item">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>Simulador</span>
+                </a>
+                <a href="#" onclick="mostrarProgreso(); return false;" class="nav-item" id="nav-progreso">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Mi Progreso</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Docente invitado</span>
+                </div>
+                <div class="mep-badge">
+                    <i class="fas fa-leaf"></i> Educación Pública CR
+                </div>
+            </div>
+        </aside>
+
+        <!-- Botón menú móvil -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Contenido Principal -->
+        <main class="main-content" id="mainContent">
+            <!-- Este contenido se carga dinámicamente vía JavaScript -->
+            <div id="dynamic-content">
+                <!-- Se carga con app.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para Visor de PDF (Biblioteca) -->
+    <div id="pdfModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Visor de lectura <span id="modal-titulo"></span></h3>
+                <span class="close-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdfIframe" src="" style="width:100%; height:80vh;" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/biblioteca.js"></script>
+    <script src="js/progreso.js"></script>
+    <script src="js/preguntas.js"></script>
+    
+    <script>
+        // Cargar inicio por defecto
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarInicio();
+        });
+    </script>
+</body>
+</html>
