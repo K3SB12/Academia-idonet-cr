@@ -9,89 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/responsive.css">
-    <style>
-        .modulo-header {
-            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-        }
-        
-        .modulo-header h1 {
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-        
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            margin: 1.5rem 0;
-        }
-        
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .lecturas-lista {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        
-        .lectura-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border-bottom: 1px solid #E5E7EB;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .lectura-item:hover {
-            background: #F3F4F6;
-        }
-        
-        .lectura-item:last-child {
-            border-bottom: none;
-        }
-        
-        .practica-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        
-        .btn-completar {
-            background: #10B981;
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 30px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 2rem;
-            transition: all 0.3s;
-        }
-        
-        .btn-completar:hover {
-            background: #059669;
-            transform: scale(1.05);
-        }
-    </style>
 </head>
 <body>
     <div class="app-container">
@@ -100,25 +19,24 @@
                 <i class="fas fa-graduation-cap logo-icon"></i>
                 <span class="logo-text">Academia MEP</span>
             </div>
-            
             <nav class="sidebar-nav">
                 <a href="../index.html" class="nav-item">
                     <i class="fas fa-home"></i>
                     <span>Inicio</span>
                 </a>
-                <a href="politica.html" class="nav-item active">
+                <a href="#" onclick="window.cargarModulos(); return false;" class="nav-item active">
                     <i class="fas fa-book-open"></i>
                     <span>Módulos</span>
                 </a>
-                <a href="#" onclick="window.parent.cargarBiblioteca(); return false;" class="nav-item">
+                <a href="#" onclick="window.cargarBiblioteca(); return false;" class="nav-item">
                     <i class="fas fa-library"></i>
                     <span>Biblioteca</span>
                 </a>
-                <a href="../simulador/simulador.html" class="nav-item">
+                <a href="#" onclick="window.cargarSimulador(); return false;" class="nav-item">
                     <i class="fas fa-pencil-alt"></i>
                     <span>Simulador</span>
                 </a>
-                <a href="#" onclick="window.parent.mostrarProgreso(); return false;" class="nav-item">
+                <a href="#" onclick="window.mostrarProgreso(); return false;" class="nav-item">
                     <i class="fas fa-chart-line"></i>
                     <span>Mi Progreso</span>
                 </a>
@@ -130,8 +48,8 @@
         </button>
 
         <main class="main-content">
-            <div class="modulo-header">
-                <h1>📘 Módulo: Política Educativa Costarricense</h1>
+            <div style="background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); color: white; padding: 2rem; border-radius: 16px; margin-bottom: 2rem;">
+                <h1 style="color: white;">📘 Módulo: Política Educativa Costarricense</h1>
                 <p>Marco normativo, lineamientos del MEP y fundamentos legales del sistema educativo nacional</p>
             </div>
             
@@ -141,64 +59,79 @@
             </div>
             
             <h2>🎥 Video explicativo</h2>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video educativo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin: 1.5rem 0;">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe>
             </div>
             
             <h2>📖 Lecturas recomendadas</h2>
-            <div class="lecturas-lista" id="lecturas-modulo">
-                <div class="lectura-item" onclick="window.parent.abrirPDF('../biblioteca/documentos/politica_educativa.pdf', 'Política Educativa MEP')">
+            <div style="background: white; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid #E5E7EB; cursor: pointer;" 
+                     onclick="window.abrirPDF('../biblioteca/documentos/politica_educativa.pdf', 'Política Educativa MEP')">
                     <i class="fas fa-file-pdf" style="color: #DC2626; font-size: 1.5rem;"></i>
-                    <div>
+                    <div style="flex:1;">
                         <div style="font-weight: 600;">Política Educativa hacia el Siglo XXI</div>
                         <small style="color: #6B7280;">MEP · 2020 · Probabilidad alta</small>
                     </div>
-                    <i class="fas fa-eye" style="margin-left: auto; color: #2563EB;"></i>
+                    <i class="fas fa-eye" style="color: #2563EB;"></i>
                 </div>
                 
-                <div class="lectura-item" onclick="window.parent.abrirPDF('../biblioteca/documentos/transformacion_curricular.pdf', 'Transformación Curricular')">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid #E5E7EB; cursor: pointer;"
+                     onclick="window.abrirPDF('../biblioteca/documentos/transformacion_curricular.pdf', 'Transformación Curricular')">
                     <i class="fas fa-file-pdf" style="color: #DC2626; font-size: 1.5rem;"></i>
-                    <div>
+                    <div style="flex:1;">
                         <div style="font-weight: 600;">Transformación Curricular en Costa Rica</div>
                         <small style="color: #6B7280;">MEP · 2021 · Probabilidad alta</small>
                     </div>
-                    <i class="fas fa-eye" style="margin-left: auto; color: #2563EB;"></i>
+                    <i class="fas fa-eye" style="color: #2563EB;"></i>
                 </div>
                 
-                <div class="lectura-item" onclick="window.parent.abrirPDF('../biblioteca/documentos/reglamento_evaluacion.pdf', 'Reglamento de Evaluación')">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; cursor: pointer;"
+                     onclick="window.abrirPDF('../biblioteca/documentos/reglamento_evaluacion.pdf', 'Reglamento de Evaluación')">
                     <i class="fas fa-file-pdf" style="color: #DC2626; font-size: 1.5rem;"></i>
-                    <div>
+                    <div style="flex:1;">
                         <div style="font-weight: 600;">Reglamento de Evaluación de los Aprendizajes</div>
                         <small style="color: #6B7280;">Decreto Ejecutivo · 2019 · Probabilidad alta</small>
                     </div>
-                    <i class="fas fa-eye" style="margin-left: auto; color: #2563EB;"></i>
+                    <i class="fas fa-eye" style="color: #2563EB;"></i>
                 </div>
             </div>
             
             <h2>✏️ Preguntas de práctica</h2>
-            <div class="practica-card">
-                <p><strong>1.</strong> Según la política educativa costarricense, la educación debe estar centrada en:</p>
+            <div style="background: white; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                <p style="font-weight: 600;">1. Según la política educativa costarricense, la educación debe estar centrada en:</p>
                 <div style="margin: 1rem 0;">
                     <div><input type="radio" name="p1"> A) Los resultados de pruebas estandarizadas</div>
                     <div><input type="radio" name="p1"> B) Las necesidades del mercado laboral</div>
                     <div><input type="radio" name="p1"> C) La persona como centro del proceso educativo</div>
                     <div><input type="radio" name="p1"> D) Los contenidos curriculares establecidos</div>
                 </div>
-                <button style="background: #2563EB; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 20px;">Ver respuesta</button>
+                <button onclick="this.nextElementSibling.style.display='block'" style="background: #2563EB; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 20px;">
+                    Ver respuesta
+                </button>
+                <div style="display: none; margin-top: 1rem; padding: 1rem; background: #EFF6FF; border-radius: 8px;">
+                    <p><strong>Respuesta correcta: C</strong> - La persona como centro del proceso educativo</p>
+                    <p style="color: #4B5563;">El MEP establece un enfoque centrado en la persona, su desarrollo integral y sus potencialidades.</p>
+                </div>
             </div>
             
-            <div class="practica-card">
-                <p><strong>2.</strong> ¿Qué documento establece los lineamientos fundamentales del sistema educativo costarricense?</p>
+            <div style="background: white; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                <p style="font-weight: 600;">2. ¿Qué documento establece los lineamientos fundamentales del sistema educativo costarricense?</p>
                 <div style="margin: 1rem 0;">
                     <div><input type="radio" name="p2"> A) Constitución Política</div>
                     <div><input type="radio" name="p2"> B) Ley Fundamental de Educación</div>
                     <div><input type="radio" name="p2"> C) Código de la Niñez</div>
                     <div><input type="radio" name="p2"> D) Estatuto de Servicio Civil</div>
                 </div>
-                <button style="background: #2563EB; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 20px;">Ver respuesta</button>
+                <button onclick="this.nextElementSibling.style.display='block'" style="background: #2563EB; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 20px;">
+                    Ver respuesta
+                </button>
+                <div style="display: none; margin-top: 1rem; padding: 1rem; background: #EFF6FF; border-radius: 8px;">
+                    <p><strong>Respuesta correcta: B</strong> - Ley Fundamental de Educación</p>
+                    <p style="color: #4B5563;">La Ley Fundamental de Educación establece los principios y fines de la educación costarricense.</p>
+                </div>
             </div>
             
-            <button class="btn-completar" onclick="completarModulo()">
+            <button onclick="window.moduloCompletado('politica')" style="background: #10B981; color: white; border: none; padding: 1rem 2rem; border-radius: 30px; font-weight: 500; margin-top: 2rem; cursor: pointer;">
                 <i class="fas fa-check-circle"></i> Marcar módulo como completado
             </button>
         </main>
@@ -208,8 +141,8 @@
     <div id="pdfModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-titulo"></h3>
-                <span class="close-modal" onclick="cerrarModal()">&times;</span>
+                <h3>Visor de lectura: <span id="modal-titulo"></span></h3>
+                <span class="close-modal" onclick="window.cerrarModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <iframe id="pdfIframe" src="" style="width:100%; height:80vh;" frameborder="0"></iframe>
@@ -217,36 +150,19 @@
         </div>
     </div>
 
+    <script src="../js/app.js"></script>
+    <script src="../js/biblioteca.js"></script>
+    <script src="../js/progreso.js"></script>
     <script>
-        // Menú móvil
         document.getElementById('mobileMenuBtn').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('mobile-open');
         });
-        
-        // Funciones para el modal
-        function abrirPDF(ruta, titulo) {
-            document.getElementById('pdfIframe').src = ruta;
-            document.getElementById('modal-titulo').textContent = titulo;
-            document.getElementById('pdfModal').style.display = 'block';
-        }
-        
-        function cerrarModal() {
-            document.getElementById('pdfModal').style.display = 'none';
-            document.getElementById('pdfIframe').src = '';
-        }
-        
-        function completarModulo() {
-            if (window.parent && window.parent.moduloCompletado) {
-                window.parent.moduloCompletado('politica');
-            }
-            alert('✅ Módulo marcado como completado. ¡Sigue así!');
-        }
         
         // Cerrar modal al hacer clic fuera
         window.onclick = function(event) {
             const modal = document.getElementById('pdfModal');
             if (event.target === modal) {
-                cerrarModal();
+                window.cerrarModal();
             }
         }
     </script>
