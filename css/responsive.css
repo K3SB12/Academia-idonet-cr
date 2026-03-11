@@ -1,6 +1,6 @@
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== RESPONSIVE.CSS - Media queries completas ===== */
 
-/* Tablet */
+/* Tablets y pantallas medianas */
 @media (max-width: 1024px) {
     .sidebar {
         width: 240px;
@@ -18,9 +18,13 @@
     .hero-section h1 {
         font-size: 2rem;
     }
+    
+    .modulos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
 }
 
-/* Móvil */
+/* Móviles y tablets pequeñas */
 @media (max-width: 768px) {
     .app-container {
         flex-direction: column;
@@ -30,10 +34,12 @@
         transform: translateX(-100%);
         width: 280px;
         z-index: 1000;
+        box-shadow: none;
     }
     
     .sidebar.mobile-open {
         transform: translateX(0);
+        box-shadow: 4px 0 20px rgba(0,0,0,0.2);
     }
     
     .main-content {
@@ -53,10 +59,16 @@
     
     .hero-buttons {
         justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .hero-section h1 {
+        font-size: 1.5rem;
     }
     
     .modulos-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
     
     .biblioteca-header {
@@ -72,6 +84,10 @@
         justify-content: center;
     }
     
+    .lecturas-grid {
+        grid-template-columns: 1fr;
+    }
+    
     .modal-content {
         width: 95%;
         margin: 5% auto;
@@ -84,28 +100,117 @@
     .progreso-stats {
         grid-template-columns: 1fr;
     }
+    
+    /* Ajustes para el simulador en móvil */
+    .simulador-container {
+        flex-direction: column;
+    }
+    
+    .simulador-sidebar {
+        position: static;
+        margin-top: 1rem;
+    }
+    
+    .panel-navegacion {
+        grid-template-columns: repeat(8, 1fr);
+    }
 }
 
-/* Móvil pequeño */
+/* Móviles pequeños */
 @media (max-width: 480px) {
+    .hero-section {
+        padding: 1.2rem;
+    }
+    
     .hero-section h1 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
     
     .hero-section p {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     
     .btn {
-        padding: 0.6rem 1.5rem;
+        padding: 0.6rem 1.2rem;
         font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
     }
     
-    .lecturas-grid {
-        grid-template-columns: 1fr;
+    .hero-buttons {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .modulo-card {
+        padding: 1.2rem;
     }
     
     .stat-card {
         padding: 1rem;
+    }
+    
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .stat-icon i {
+        font-size: 1.3rem;
+    }
+    
+    .stat-number {
+        font-size: 1.3rem;
+    }
+    
+    .filtros-categoria {
+        gap: 0.3rem;
+    }
+    
+    .filtro-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .panel-navegacion {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* Ajustes para pantallas muy grandes */
+@media (min-width: 1600px) {
+    .main-content {
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 2rem 4rem;
+    }
+    
+    .modulos-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Soporte para landscape en móviles */
+@media (max-width: 900px) and (orientation: landscape) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    .sidebar-header {
+        padding: 1rem;
+    }
+    
+    .nav-item {
+        padding: 0.6rem 1rem;
+    }
+    
+    .sidebar-footer {
+        padding: 1rem;
+    }
+    
+    .modal-content {
+        margin: 1% auto;
+        max-height: 95vh;
     }
 }
