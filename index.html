@@ -10,16 +10,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome para íconos -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- Nuestros estilos -->
+    <!-- Estilos -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-    <!-- Navegación Lateral (Dashboard Style) -->
     <div class="app-container">
+        <!-- Sidebar - Navegación Lateral -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <i class="fas fa-graduation-cap logo-icon"></i>
@@ -27,23 +28,23 @@
             </div>
             
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-item active">
+                <a href="#" onclick="window.cargarInicio(); return false;" class="nav-item active" id="nav-inicio">
                     <i class="fas fa-home"></i>
                     <span>Inicio</span>
                 </a>
-                <a href="modulos/politica.html" class="nav-item">
+                <a href="#" onclick="window.cargarModulos(); return false;" class="nav-item" id="nav-modulos">
                     <i class="fas fa-book-open"></i>
                     <span>Módulos</span>
                 </a>
-                <a href="#" onclick="cargarBiblioteca(); return false;" class="nav-item" id="nav-biblioteca">
+                <a href="#" onclick="window.cargarBiblioteca(); return false;" class="nav-item" id="nav-biblioteca">
                     <i class="fas fa-library"></i>
                     <span>Biblioteca</span>
                 </a>
-                <a href="simulador/simulador.html" class="nav-item">
+                <a href="#" onclick="window.cargarSimulador(); return false;" class="nav-item" id="nav-simulador">
                     <i class="fas fa-pencil-alt"></i>
                     <span>Simulador</span>
                 </a>
-                <a href="#" onclick="mostrarProgreso(); return false;" class="nav-item" id="nav-progreso">
+                <a href="#" onclick="window.mostrarProgreso(); return false;" class="nav-item" id="nav-progreso">
                     <i class="fas fa-chart-line"></i>
                     <span>Mi Progreso</span>
                 </a>
@@ -65,11 +66,14 @@
             <i class="fas fa-bars"></i>
         </button>
 
-        <!-- Contenido Principal -->
-        <main class="main-content" id="mainContent">
-            <!-- Este contenido se carga dinámicamente vía JavaScript -->
+        <!-- CONTENEDOR PRINCIPAL - CARGA DINÁMICA -->
+        <main class="main-content">
             <div id="dynamic-content">
-                <!-- Se carga con app.js -->
+                <!-- Todo el contenido se carga aquí vía JavaScript -->
+                <div class="loader-container">
+                    <i class="fas fa-spinner fa-spin loader-icon"></i>
+                    <p>Cargando plataforma educativa...</p>
+                </div>
             </div>
         </main>
     </div>
@@ -78,8 +82,8 @@
     <div id="pdfModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Visor de lectura <span id="modal-titulo"></span></h3>
-                <span class="close-modal" onclick="cerrarModal()">&times;</span>
+                <h3>Visor de lectura: <span id="modal-titulo"></span></h3>
+                <span class="close-modal" onclick="window.cerrarModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <iframe id="pdfIframe" src="" style="width:100%; height:80vh;" frameborder="0"></iframe>
@@ -87,16 +91,60 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Modal para instrucciones del simulador -->
+    <div id="simuladorModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>📝 Instrucciones del Simulador</h3>
+                <span class="close-modal" onclick="window.cerrarSimuladorModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div style="padding: 1rem;">
+                    <h4>Características del examen:</h4>
+                    <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li><strong>60 preguntas</strong> de opción múltiple</li>
+                        <li><strong>4 horas</strong> de duración</li>
+                        <li>Puedes marcar preguntas para revisar después</li>
+                        <li>Al finalizar, verás tu puntaje y temas a reforzar</li>
+                    </ul>
+                    <button onclick="window.iniciarSimulador()" class="btn-primary" style="width: 100%; padding: 1rem;">
+                        <i class="fas fa-play"></i> Iniciar Simulador
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts - Orden crítico -->
     <script src="js/app.js"></script>
     <script src="js/biblioteca.js"></script>
+    <script src="js/simulador.js"></script>
     <script src="js/progreso.js"></script>
     <script src="js/preguntas.js"></script>
     
     <script>
-        // Cargar inicio por defecto
+        // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
-            cargarInicio();
+            window.cargarInicio();
+            
+            // Configurar menú móvil
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (mobileBtn) {
+                mobileBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('mobile-open');
+                });
+            }
+            
+            // Cerrar sidebar al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
+                        sidebar.classList.remove('mobile-open');
+                    }
+                }
+            });
         });
     </script>
 </body>
